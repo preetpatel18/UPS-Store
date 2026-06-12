@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: storeops-api
+    env: node
+    plan: starter
+    buildCommand: npm run build:api
+    startCommand: npm run start:api
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: HOST
+        value: 0.0.0.0
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DB_NAME
+        value: storeops
+      - key: JWT_SECRET
+        sync: false
+      - key: CLIENT_ORIGIN
+        sync: false
+      - key: SEED_DEMO_DATA
+        value: false
