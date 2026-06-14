@@ -112,6 +112,22 @@ PLATFORM_OWNER_EMAIL=preetpatel1862@gmail.com
 PLATFORM_OWNER_PASSWORD=<your secure owner password>
 ```
 
+For `MONGODB_URI`, Render has a separate key field and value field. The key should be `MONGODB_URI`; the value should start directly with `mongodb+srv://` or `mongodb://`.
+
+Do not paste this into Render's value field:
+
+```txt
+MONGODB_URI=mongodb+srv://USERNAME:PASSWORD@CLUSTER.mongodb.net/storeops
+```
+
+Paste only this style of value:
+
+```txt
+mongodb+srv://USERNAME:PASSWORD@CLUSTER.mongodb.net/storeops?retryWrites=true&w=majority
+```
+
+If the database password contains special characters like `@`, `#`, `/`, or `?`, either URL-encode them or create a simpler Atlas database password.
+
 After Render deploys, test:
 
 ```txt
