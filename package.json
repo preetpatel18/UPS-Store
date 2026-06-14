@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=20",
+    "node": "20.x",
     "npm": ">=10"
   },
   "scripts": {
@@ -12,6 +12,7 @@
     "dev:web": "vite --host 0.0.0.0",
     "dev:api": "tsx watch server/index.ts",
     "build": "tsc -b && tsc -p tsconfig.server.json && vite build",
+    "prebuild:api": "npm install --include=dev --no-audit --no-fund",
     "build:api": "tsc -p tsconfig.server.build.json",
     "start:api": "node server-dist/index.js",
     "test": "npm run test:security && npm run test:finalization",

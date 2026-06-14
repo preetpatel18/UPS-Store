@@ -92,7 +92,7 @@ Manual Render settings:
 ```txt
 Runtime: Node
 Instance Type: Free
-Build Command: npm ci --include=dev && npm run build:api
+Build Command: npm run build:api
 Start Command: npm run start:api
 Health Check Path: /api/health
 ```
