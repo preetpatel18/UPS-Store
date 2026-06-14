@@ -120,11 +120,13 @@ Do not paste this into Render's value field:
 MONGODB_URI=mongodb+srv://USERNAME:PASSWORD@CLUSTER.mongodb.net/storeops
 ```
 
-Paste only this style of value:
+Paste only this style of value, using your real Atlas database username, password, and cluster host from Atlas `Connect > Drivers`:
 
 ```txt
-mongodb+srv://USERNAME:PASSWORD@CLUSTER.mongodb.net/storeops?retryWrites=true&w=majority
+mongodb+srv://myStoreUser:myPassword@ac-example-shard.mongodb.net/storeops?retryWrites=true&w=majority
 ```
+
+Do not leave placeholders like `USERNAME`, `PASSWORD`, or `CLUSTER` in the Render value.
 
 If the database password contains special characters like `@`, `#`, `/`, or `?`, either URL-encode them or create a simpler Atlas database password.
 

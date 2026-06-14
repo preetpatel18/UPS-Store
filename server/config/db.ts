@@ -22,6 +22,12 @@ export async function connectDb() {
     );
   }
 
+  if (hasMongoPlaceholder(uri)) {
+    throw new Error(
+      "MONGODB_URI still contains placeholder text. Replace USERNAME, PASSWORD, and CLUSTER with the real MongoDB Atlas database user and cluster host from Atlas Connect > Drivers."
+    );
+  }
+
   const databaseName = process.env.MONGODB_DB_NAME?.trim();
   const timeout = positiveNumber(process.env.MONGODB_SERVER_SELECTION_TIMEOUT_MS, 10000);
 
@@ -81,4 +87,8 @@ function stripOuterQuotes(value: string) {
 
 function isMongoUri(value: string) {
   return value.startsWith("mongodb://") || value.startsWith("mongodb+srv://");
+}
+
+function hasMongoPlaceholder(value: string) {
+  return /\b(USERNAME|PASSWORD|CLUSTER)\b/i.test(value);
 }
