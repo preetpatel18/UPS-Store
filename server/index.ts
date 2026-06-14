@@ -35,6 +35,18 @@ app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json({ limit: "30mb" }));
 app.use(morgan("dev"));
 
+app.get("/", (_req, res) => {
+  const frontendUrl = firstPublicOrigin(allowedOrigins);
+
+  res.status(200).json({
+    ok: true,
+    service: "storeops-api",
+    message: "StoreOps API is running. Deploy the React frontend separately and connect it with VITE_API_BASE_URL.",
+    health: "/api/health",
+    ...(frontendUrl ? { frontend: frontendUrl } : {})
+  });
+});
+
 app.get("/api/health", (_req, res) => {
   const database = getDbStatus();
   res.status(database.connected ? 200 : 503).json({ ok: database.connected, service: "storeops-api", database });
@@ -91,6 +103,10 @@ app.listen(port, host, () => {
 function positiveNumber(value: string | undefined, fallback: number) {
   const number = Number(value);
   return Number.isFinite(number) && number > 0 ? number : fallback;
+}
+
+function firstPublicOrigin(origins: string[]) {
+  return origins.find((origin) => !origin.includes("localhost") && !origin.includes("127.0.0.1"));
 }
 
 function blockOwnerStoreOperations(req: AuthRequest, res: express.Response, next: express.NextFunction) {
