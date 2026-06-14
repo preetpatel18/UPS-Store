@@ -24,14 +24,21 @@ const app = express();
 const port = Number(process.env.PORT ?? 4000);
 const host = process.env.HOST ?? "0.0.0.0";
 const retryDelay = positiveNumber(process.env.MONGODB_RETRY_DELAY_MS, 5000);
-const allowedOrigins = (process.env.CLIENT_ORIGIN ?? "http://localhost:5173")
-  .split(",")
-  .map((origin) => origin.trim())
-  .filter(Boolean);
+const allowedOrigins = parseAllowedOrigins(process.env.CLIENT_ORIGIN);
+const allowedOriginSet = new Set(allowedOrigins);
 let databaseConnectionPending = false;
 
 app.use(helmet());
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    return callback(null, allowedOriginSet.has(normalizeOrigin(origin)));
+  },
+  credentials: true
+}));
 app.use(express.json({ limit: "30mb" }));
 app.use(morgan("dev"));
 
@@ -103,6 +110,31 @@ app.listen(port, host, () => {
 function positiveNumber(value: string | undefined, fallback: number) {
   const number = Number(value);
   return Number.isFinite(number) && number > 0 ? number : fallback;
+}
+
+function parseAllowedOrigins(value: string | undefined) {
+  const origins = (value || "http://localhost:5173")
+    .split(",")
+    .map(normalizeOrigin)
+    .filter(Boolean);
+
+  return Array.from(new Set(origins));
+}
+
+function normalizeOrigin(value: string) {
+  const withoutAssignment = value.trim().replace(/^CLIENT_ORIGIN\s*=\s*/i, "").trim();
+  const withoutQuotes = stripOuterQuotes(withoutAssignment);
+  return withoutQuotes.replace(/\/+$/, "");
+}
+
+function stripOuterQuotes(value: string) {
+  if (value.length < 2) {
+    return value;
+  }
+
+  const first = value[0];
+  const last = value[value.length - 1];
+  return (first === '"' && last === '"') || (first === "'" && last === "'") ? value.slice(1, -1).trim() : value;
 }
 
 function firstPublicOrigin(origins: string[]) {
