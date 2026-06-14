@@ -85,10 +85,13 @@ Create a GitHub repository and push this project. Connect that same repository t
 
 Use the included `render.yaml` blueprint or create a Render Web Service manually.
 
+For a no-card/free test deployment, create the Web Service manually and choose Render's free instance type. Free instances are fine for testing, but they sleep after idle time and wake up slowly. For real customer stores, upgrade the API later.
+
 Manual Render settings:
 
 ```txt
 Runtime: Node
+Instance Type: Free
 Build Command: npm run build:api
 Start Command: npm run start:api
 Health Check Path: /api/health

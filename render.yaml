@@ -2,7 +2,7 @@ services:
   - type: web
     name: storeops-api
     env: node
-    plan: starter
+    plan: free
     buildCommand: npm run build:api
     startCommand: npm run start:api
     healthCheckPath: /api/health
