@@ -21,3 +21,11 @@ services:
         sync: false
       - key: SEED_DEMO_DATA
         value: false
+      - key: PLATFORM_OWNER_NAME
+        value: Preet Patel
+      - key: PLATFORM_OWNER_USERNAME
+        value: preet1862
+      - key: PLATFORM_OWNER_EMAIL
+        value: preetpatel1862@gmail.com
+      - key: PLATFORM_OWNER_PASSWORD
+        sync: false
