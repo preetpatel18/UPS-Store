@@ -20,6 +20,7 @@ import searchRoutes from "./routes/search.js";
 import storeRoutes from "./routes/stores.js";
 import { requireAuth, type AuthRequest } from "./middleware/auth.js";
 
+const defaultClientOrigins = ["http://localhost:5173", "https://ups-store.vercel.app"];
 const app = express();
 const port = Number(process.env.PORT ?? 4000);
 const host = process.env.HOST ?? "0.0.0.0";
@@ -29,7 +30,7 @@ const allowedOriginSet = new Set(allowedOrigins);
 let databaseConnectionPending = false;
 
 app.use(helmet());
-app.use(cors({
+const corsOptions: cors.CorsOptions = {
   origin(origin, callback) {
     if (!origin) {
       return callback(null, true);
@@ -38,7 +39,10 @@ app.use(cors({
     return callback(null, allowedOriginSet.has(normalizeOrigin(origin)));
   },
   credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(express.json({ limit: "30mb" }));
 app.use(morgan("dev"));
 
@@ -113,12 +117,12 @@ function positiveNumber(value: string | undefined, fallback: number) {
 }
 
 function parseAllowedOrigins(value: string | undefined) {
-  const origins = (value || "http://localhost:5173")
+  const envOrigins = (value || "")
     .split(",")
     .map(normalizeOrigin)
     .filter(Boolean);
 
-  return Array.from(new Set(origins));
+  return Array.from(new Set([...defaultClientOrigins.map(normalizeOrigin), ...envOrigins]));
 }
 
 function normalizeOrigin(value: string) {
